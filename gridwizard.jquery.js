@@ -33,14 +33,14 @@ $(function($) {
 		var defaults = {
 
 			// Call mama, i didn't ever mind what is this stuff is all about!
-			'id' : 'gridWizard',
+			id : 'gridWizard',
 
 			// Callback called when grid builded
 			'onRebuild' : function() {
 
 			},
 			// Language strings
-			'l' : {
+			l : {
 				'split' : 'split',
 				'px' : 'px',
 				'joinright' : 'join with right cell',
@@ -50,40 +50,41 @@ $(function($) {
 			},
 
 			// Internal trigger
-			'rebuild' : function() {
+			rebuild : function() {
 				init(this);
 			},
 
 			// Default original layout size
-			'width' : 800,
-			'height' : 600,
+			width : 800,
+			height : 600,
 
 			// option: toggle sizing table cells
-			'resizeCells' : true,
+			resizeCells : true,
 
 			// option: toggle joining and table cells
-			'formatTable' : true,
+			formatTable : true,
 
 			// option: display table cells sizes
-			'showSizes' : true,
+			showSizes : true,
 
 			// default scaled layout
-			'scaledWidth' : 300,
-			'scaledHeight' : 300,
+			scaledWidth : 300,
+			scaledHeight : 300,
 
 			// Layout Table Rows x Cols
-			'maxCol' : 4,
-			'maxRow' : 4,
+			maxCol : 4,
+			maxRow : 4,
 
-			'matrix' : new Array(),
+			matrix : [],
 
-			'cells' : [{
-				'id' : '0',
-				'colspan' : 4,
-				'rowspan' : 4
+			cells : [{
+				id : '0',
+				colspan : 4,
+				rowspan : 4
 			}]
 		};
-		var options = $.extend(defaults, options);
+
+		options = $.extend(defaults, options);
 		
 
 		/***********************************************************************
@@ -115,8 +116,8 @@ $(function($) {
 			var defaultCellW = Math.round(opts.width / opts.maxCol);
 			var defaultCellH = Math.round(opts.height / opts.maxRow);
 
-			opts.sizesW = opts.sizesW || new Array();
-			opts.sizesH = opts.sizesH || new Array();
+			opts.sizesW = opts.sizesW || [];
+			opts.sizesH = opts.sizesH || [];
 
 			for (i = 0; i < opts.maxCol; i++) {
 				opts.sizesW[i] = parseInt(opts.sizesW[i]) || defaultCellW;
@@ -163,7 +164,7 @@ $(function($) {
 
 			$(opts.obj).append(container);
 			opts.onRebuild.call(opts);
-		}
+		};
 
 		/***********************************************************************
 		 * SPREAD DELTA PX
@@ -182,7 +183,7 @@ $(function($) {
 			}
 			if (pixels != 0)
 				spreadPixels(arr, pixels);
-		}
+		};
 
 		/***********************************************************************
 		 * ARRAY SUM
@@ -197,9 +198,9 @@ $(function($) {
 				} else {
 					return false;
 				}
-			};
+			}
 			return sum;
-		}
+		};
 
 		/***********************************************************************
 		 * CONVERT PERCENTS
@@ -210,7 +211,7 @@ $(function($) {
 				if (typeof(arr[i]) == 'string') {
 					if (/\%/.test(arr[i])) {
 						perc = parseFloat(arr[i]);
-						arr[i] = Math.round((aspect / 100) * perc)
+						arr[i] = Math.round((aspect / 100) * perc);
 						impressionSum = impressionSum + Math.round((aspect / 100) * perc) - ((aspect / 100) * perc);
 					}
 				}
@@ -218,7 +219,7 @@ $(function($) {
 
 			spreadPixels(arr, Math.round(impressionSum));
 			return arr;
-		}
+		};
 
 		/***********************************************************************
 		 * NORMALISE SIZES
@@ -232,14 +233,7 @@ $(function($) {
 			}
 			return sizes;
 
-		}
-
-		/***********************************************************************
-		 * Simplify
-		 **********************************************************************/
-		var simplifyObj = function(o) {
-			return o;
-		}
+		};
 
 		/***********************************************************************
 		 * RESUZE CONTAINER
@@ -250,7 +244,7 @@ $(function($) {
 				.css('left', left + 'px')
 				.css('width', _width + 'px')
 				.css('height', _height + 'px');
-		}
+		};
 
 		/***********************************************************************
 		 * RESERVE MATRIX
@@ -269,14 +263,14 @@ $(function($) {
 				'x' : sizeX,
 				'y' : sizeY
 			};
-		}
+		};
 
 		/***********************************************************************
 		 * RECALCULATE SIZES
 		 **********************************************************************/
 		var recalculateSizes = function(dragletsH, dragletsV, opts) {
-			var horW = new Array();
-			var horH = new Array();
+			var horW = [];
+			var horH = [];
 			horH[0] = 0;
 			horW[0] = 0;
 			for (i = 0; i < opts.maxCol - 1; i++) horW[i + 1] = Math.round(parseInt($(dragletsV[i]).css('left')) / opts.scaleRatio);
@@ -286,7 +280,7 @@ $(function($) {
 			horH[horH.length] = opts.height;
 			for (i = 0; i < opts.maxRow; i++) opts.sizesH[i] = horH[i + 1] - horH[i];
 			init(opts);
-		}
+		};
 
 		var containerBuilder = function(opts) {
 			var container = document.createElement('div');
@@ -295,7 +289,7 @@ $(function($) {
 
 			opts.container = container;
 			return container;
-		}
+		};
 
 		/***********************************************************************
 		 * DRAG BUILDER
@@ -306,8 +300,8 @@ $(function($) {
 					_height).css('width', _width).css('z-index', 50).css(
 					'position', 'absolute');
 
-			var dragletVertical = new Array();
-			var dragletHorizontal = new Array();
+			var dragletVertical = [];
+			var dragletHorizontal = [];
 
 			for (n = 0; n < opts.maxCol - 1; n++) {
 				dragletVertical[n] = document.createElement('div');
@@ -336,7 +330,7 @@ $(function($) {
 
 			$(dragletHorizontal)
 				.mousedown(function() {
-					$(dragContainer).addClass('ui-container-drag')
+					$(dragContainer).addClass('ui-container-drag');
 					$(this).addClass('ui-draglet-inuse');
 					var index = parseInt($(this).attr('rel'));
 					if (index == 1) {
@@ -355,10 +349,10 @@ $(function($) {
 					axis : 'y',
 					containment : $(dragContainer),
 					scroll : false,
-					start : function(e, ui) {
+					start : function() {
 						$(opts.table).hide();
 					},
-					stop : function(e, ui) {
+					stop : function() {
 						resizeContainer(dragContainer, 0, 0, _width, _height);
 						$(dragContainer).removeClass('ui-container-drag');
 						recalculateSizes(dragletHorizontal, dragletVertical, opts);
@@ -385,17 +379,17 @@ $(function($) {
 					axis : 'x',
 					containment : $(dragContainer),
 					scroll : false,
-					start : function(e, ui) {
+					start : function() {
 						$(opts.table).hide();
 					},
-					stop : function(e, ui) {
+					stop : function() {
 						resizeContainer(dragContainer, 0, 0, _width, _height);
 						$(dragContainer).removeClass('ui-container-drag');
 						recalculateSizes(dragletHorizontal, dragletVertical, opts);
 					}
 				});
 			return [dragContainer, dragletHorizontal, dragletVertical];
-		}
+		};
 
 		/***********************************************************************
 		 * TABLE BUILDER
@@ -423,16 +417,17 @@ $(function($) {
 					$(WSizesTBL).append(Wtd);
 				}
 				var top = 0;
-				for (var i = 0; i < limitRow; i++) {
+				for (i = 0; i < limitRow; i++) {
 					var Htr = document.createElement('tr');
 					var Htd = document.createElement('td');
 
 					$(Htd)
 						.css('height', parseInt(opts.sizesH[i] * opts.scaleRatio) + 'px')
 						.css('text-align', 'center')
-						.html('<div style="left:' + (($.browser.msie || $.browser.opera || $.browser.safari) ? 0 : (_width + 10))
-							+ 'px; top:' + (parseInt(top) + 2)
-							+ 'px; position:absolute;' 
+						.html('<div style="' +
+							'left:' + 10 + 'px; ' +
+							'top:' + (parseInt(top) + 2) + 'px; ' +
+							'position:absolute;'
 							+ 'height:' + Math.round(opts.sizesH[i] * opts.scaleRatio) + 'px;"></div>'
 							+ opts.sizesH[i] + 'px');
 					$(Htr).append(Htd);
@@ -449,12 +444,11 @@ $(function($) {
 					'absolute').css('z-index', 100).addClass('wiz-grid');
 
 			var currZoneIndex = 0;
-			for (var y = 0; y < limitRow; y++) {
+			for ( y = 0; y < limitRow; y++) {
 				var currentTR = document.createElement('tr');
 				$(currentTR).attr('valign', 'top');
 				
-				var currentWidth = 0;
-				for (var x = 0; x < limitCol; x++) {
+				for ( x = 0; x < limitCol; x++) {
 					if (!opts.matrix[y * limitCol + x])
 						continue;
 					
@@ -502,9 +496,9 @@ $(function($) {
 
 				var tds = $('td', currentTBL);
 
-				var currZoneIndex = 0;
+				currZoneIndex = 0;
 
-				var newMatrix = new Array();
+				var newMatrix = [];
 				var currentIndex = 0;
 				for (var y = 0; y < opts.maxRow; y++) {
 					for (var x = 0; x < opts.maxCol; x++) {
@@ -520,7 +514,6 @@ $(function($) {
 					}
 				}
 
-				var currZoneIndex = 0;
 
 				$(tds).each(function() {
 
@@ -529,6 +522,7 @@ $(function($) {
 					}
 
 					var cZoneIndex = 0;
+					var targetZoneIndex;
 					for (var y = 0; y < opts.maxRow; y++) {
 						for (var x = 0; x < opts.maxCol; x++) {
 							var current = newMatrix[y * opts.maxCol + x];
@@ -542,8 +536,6 @@ $(function($) {
 										if (newMatrix[(y - j) * opts.maxCol + x].state && newMatrix[(y - j) * opts.maxCol + x].rowspan == j) {
 											var top = newMatrix[(y - j) * opts.maxCol + x];
 											break;
-										} else {
-											continue;
 										}
 									}
 								}
@@ -558,7 +550,7 @@ $(function($) {
 								// top
 								if ((y > 0) && typeof(top) != 'undefined' && top.state && (top.colspan == current.colspan)) {
 									targetZoneIndex = top.index;
-									$(this).prepend(createButton(this, 'top',opts, currZoneIndex,targetZoneIndex));
+									$(this).prepend(createButton(this, 'top', opts, currZoneIndex, targetZoneIndex));
 								}
 								// right
 								if ((x < opts.maxCol - 1) && typeof(right) != 'undefined' && right.state && (right.rowspan == current.rowspan)) {
@@ -599,7 +591,7 @@ $(function($) {
 				return [currentTBL];
 			}
 
-		}
+		};
 
 		/***********************************************************************
 		 * CREATE BUTTON (Join/Split)
@@ -658,9 +650,9 @@ $(function($) {
 						.text(opts.l.split)
 						.bind('click', opts, function(e) {
 							var currentIndex = 0;
-							var newCells = new Array();
-							for (var y = 0; y <= e.data.maxRow - 1; y++) {
-								for (var x = 0; x <= e.data.maxCol - 1; x++) {
+							var newCells = [];
+							for ( y = 0; y <= e.data.maxRow - 1; y++) {
+								for ( x = 0; x <= e.data.maxCol - 1; x++) {
 									if (e.data.matrix[y * e.data.maxCol + x] == false)
 										continue;
 
@@ -689,13 +681,13 @@ $(function($) {
 
 							for (var y = 0; y <= e.data.maxRow - 1; y++) {
 								for (var x = 0; x <= e.data.maxCol - 1; x++) {
-									var currZone = e.data.cells[currentIndex];
+									currZone = e.data.cells[currentIndex];
 									if (e.data.matrix[y * e.data.maxCol + x] == true) {
 										newCells[newIndex] = currZone;
 										currentIndex++;
 										newIndex++;
 										continue;
-									};
+									}
 
 									if (e.data.matrix[y * e.data.maxCol + x] == 'reserved') {
 										newCells[newIndex] = {
@@ -704,8 +696,8 @@ $(function($) {
 										};
 										e.data.matrix[y * e.data.maxCol + x] = true;
 										newIndex++;
-										continue;
-									};
+
+									}
 								}
 							}
 
@@ -717,23 +709,23 @@ $(function($) {
 			}
 
 			return button;
-		}
+		};
 
 		var deleteZone = function(arr, index) {
-			var newArr = new Array();
+			var newArr = [];
 			for (var i = 0; i < arr.length; i++) {
 				if (i != index)
 					newArr[newArr.length] = arr[i];
 			}
 			return newArr;
-		}
+		};
 
-		var rebuildCells = function(o, index, targetIndex, direction) {
-			var newCells = new Array();
+		var rebuildCells;
+		rebuildCells = function (o, index, targetIndex, direction) {
 			switch (direction) {
 				case 'bottom' :
 					o.cells[index].rowspan = parseInt(o.cells[index].rowspan)
-							+ parseInt(o.cells[targetIndex].rowspan);
+					+ parseInt(o.cells[targetIndex].rowspan);
 					o.cells = deleteZone(o.cells, targetIndex);
 					break;
 				case 'top' :
@@ -752,7 +744,7 @@ $(function($) {
 					break;
 			}
 			o.rebuild(o);
-		}
+		};
 
 		/***********************************************************************
 		 * 
